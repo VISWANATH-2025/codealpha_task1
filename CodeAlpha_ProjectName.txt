@@ -1,0 +1,79 @@
+import javax.swing.*;
+import java.util.ArrayList;
+
+class Student {
+    String name;
+    ArrayList<Integer> grades;
+
+    Student(String name) {
+        this.name = name;
+        this.grades = new ArrayList<>();
+    }
+
+    void addGrade(int grade) {
+        grades.add(grade);
+    }
+
+    double getAverage() {
+        int sum = 0;
+        for (int grade : grades) sum += grade;
+        return grades.size() > 0 ? (double) sum / grades.size() : 0;
+    }
+
+    int getHighest() {
+        int highest = Integer.MIN_VALUE;
+        for (int grade : grades)
+            if (grade > highest) highest = grade;
+        return highest;
+    }
+
+    int getLowest() {
+        int lowest = Integer.MAX_VALUE;
+        for (int grade : grades)
+            if (grade < lowest) lowest = grade;
+        return lowest;
+    }
+
+    String getReport() {
+        return "Name: " + name +
+               "\nGrades: " + grades +
+               "\nAverage: " + String.format("%.2f", getAverage()) +
+               "\nHighest: " + getHighest() +
+               "\nLowest: " + getLowest() +
+               "\n---------------------------";
+    }
+}
+
+public class StudentGradeTrackerGUI {
+    public static void main(String[] args) {
+        ArrayList<Student> students = new ArrayList<>();
+
+        int numStudents = Integer.parseInt(JOptionPane.showInputDialog("Enter number of students:"));
+
+        for (int i = 0; i < numStudents; i++) {
+            String name = JOptionPane.showInputDialog("Enter name of student " + (i + 1) + ":");
+            Student student = new Student(name);
+
+            int numGrades = Integer.parseInt(JOptionPane.showInputDialog("Enter number of grades for " + name + ":"));
+
+            for (int j = 0; j < numGrades; j++) {
+                int grade = Integer.parseInt(JOptionPane.showInputDialog("Enter grade " + (j + 1) + ":"));
+                student.addGrade(grade);
+            }
+
+            students.add(student);
+        }
+
+        StringBuilder report = new StringBuilder("--- Summary Report ---\n");
+        for (Student student : students) {
+            report.append(student.getReport()).append("\n");
+        }
+
+        JTextArea textArea = new JTextArea(report.toString());
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(400, 300));
+
+        JOptionPane.showMessageDialog(null, scrollPane, "Student Grade Summary", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
